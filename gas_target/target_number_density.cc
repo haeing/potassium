@@ -1,14 +1,3 @@
-#include <cmath>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <stdexcept>
-
-// Same ideal-gas model, constants and default conditions as target_thickness.cc.
-// From the project directory:
-//   root -l -b -q 'gas_target/target_number_density.cc()'
-//   root -l -b -q 'gas_target/target_number_density.cc(180.0, 1.5, 0.5)'
-// Arguments: temperature [K], absolute pressure [bar], beam path length [cm].
 void target_number_density(double temperature_K = 180.0,
                            double pressure_bar = 1.5,
                            double L_target = 0.5)

@@ -1,23 +1,20 @@
-#include <iostream>
 #include <algorithm>
-#include <stdexcept>
-#include <memory>
-#include <vector>
 #include <cmath>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
-#include "TGraph.h"
-#include "TFile.h"
-#include "TTree.h"
-#include "TSystem.h"
 #include "TCanvas.h"
-#include "TAxis.h"
+#include "TFile.h"
+#include "TGraph.h"
 #include "TString.h"
+#include "TSystem.h"
+#include "TTree.h"
 
 using namespace std;
 
-// Ideal-gas approximation for dilute Ar: rho = P M / (R T).
-// At 1.5 bar, the neglected density correction is about 0.6% at 180 K
-// and 0.2% at 250 K. Reassess the approximation for other conditions.
 namespace argon_target {
 double density(double temperature_K, double pressure_bar)
 {
@@ -35,20 +32,16 @@ double density(double temperature_K, double pressure_bar)
 }
 } // namespace argon_target
 
-// From the project directory (180 K, 1.5 bar absolute):
-// root -l -b -q 'gas_target/target_thickness.cc(180.0, 1.5)'
-// From gas_target/:
-// root -l -b -q 'target_thickness.cc(180.0, 1.5)'
-// Arguments: temperature [K], absolute pressure [bar], optional ROOT input,
-// target length [cm], integration step [cm]. PDFs go beside this macro.
 void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
                       const char *srim_file = "",
-                      double L_target = 0.5, double dx = 0.001)
+                      double L_target = 0.5, double dx = 0.001,
+                      double proton_energy_MeV = 3.5)
 {
     const double E_min = 3.0;      // MeV
     const double E_max = 4.0;      // MeV
     const double E_step = 0.1;     // MeV
-    const double E0 = 3.5;         // MeV, detailed profile
+    if (!isfinite(proton_energy_MeV) || proton_energy_MeV <= 0)
+        throw runtime_error("Incident proton energy [MeV] must be finite and positive");
     if (!isfinite(L_target) || L_target <= 0 || !isfinite(dx) || dx <= 0)
         throw runtime_error("Target length and integration step must be positive");
     const double rho = argon_target::density(temperature_K, pressure_bar);
@@ -79,6 +72,8 @@ void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
         stopping.push_back(electronic + nuclear);
     }
     input->Close();
+    if (proton_energy_MeV < energy.front() || proton_energy_MeV > energy.back())
+        throw runtime_error("Incident proton energy outside SRIM range");
     cout << "Read " << energy.size() << " SRIM points from " << input_path << endl;
     TGraph stopping_graph(energy.size(), energy.data(), stopping.data());
 
@@ -171,7 +166,15 @@ void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
     // Calculate the profile before writing any PDFs, so a failed integration
     // does not leave a partially updated set of plots.
     vector<double> xpos, Eprofile;
-    propagate(E0, &xpos, &Eprofile);
+    const double profile_exit = propagate(proton_energy_MeV, &xpos, &Eprofile);
+    // Energy-equivalent target thickness depends on the incident proton energy.
+    // Use the integrated loss, including the change in stopping power with E.
+    const double energy_thickness_MeV = proton_energy_MeV - profile_exit;
+    cout << "\nSelected proton: Ein = " << proton_energy_MeV
+         << " MeV, Eout = " << profile_exit
+         << " MeV" << endl;
+    cout << "Energy thickness = " << energy_thickness_MeV << " MeV"
+         << " (" << energy_thickness_MeV * 1000 << " keV)" << endl;
 
     // ============================================================
     // Plot DeltaE vs incident energy
@@ -201,7 +204,7 @@ void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
     c1->SaveAs(macro_dir + "/target_thickness.pdf");
 
     // ============================================================
-    // Example: detailed energy profile for 3.5 MeV proton
+    // Detailed energy profile for the selected incident proton energy
     // ============================================================
 
     TGraph *gProfile =
@@ -209,11 +212,10 @@ void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
                    xpos.data(),
                    Eprofile.data());
 
-    gProfile->SetTitle(
-        "3.5 MeV Proton in Ar;"
+    gProfile->SetTitle(Form(
+        "%.8g MeV Proton in Ar;"
         "Position in Ar [mm];"
-        "Proton Energy [MeV]"
-    );
+        "Proton Energy [MeV]", proton_energy_MeV));
 
     gProfile->SetLineWidth(2);
 
@@ -224,5 +226,7 @@ void target_thickness(double temperature_K = 180.0, double pressure_bar = 1.5,
 
     gProfile->Draw("AL");
 
-    c2->SaveAs(macro_dir + "/energy_profile_3p5MeV.pdf");
+    TString energy_label = Form("%.8g", proton_energy_MeV);
+    energy_label.ReplaceAll(".", "p");
+    c2->SaveAs(macro_dir + "/energy_profile_" + energy_label + "MeV.pdf");
 }
