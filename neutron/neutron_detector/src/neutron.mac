@@ -1,0 +1,10 @@
+/run/initialize
+
+/control/verbose 2
+/run/verbose 2
+
+/gun/particle neutron
+/gun/energy 0.3 MeV
+
+/run/beamOn 1000
+
