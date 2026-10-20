@@ -70,15 +70,17 @@ def junction(ax, x, y, color):
                         edgecolor=color, zorder=5))
 
 
-def flow_arrow(ax, start, end, color):
+def flow_arrow(ax, start, end, color, bidirectional=False):
     ax.annotate("", xy=end, xytext=start,
-                arrowprops={"arrowstyle": "-|>", "color": color,
+                arrowprops={"arrowstyle": "<|-|>" if bidirectional else "-|>",
+                            "color": color,
                             "lw": PIPE_LW, "mutation_scale": 22}, zorder=3)
 
 
 def build_schematic():
-    """Preserve Ar → MFC → V1 → PS1 tap → V2 → cell topology.
+    """Separate V1a supply and V1b gas-cell evacuation branches.
 
+    The branches join before the PS1 tap and V2 leading to the gas cell.
     Chamber vacuum exits via V3; PS2 taps the pump side of V3.
     The gas cell and chamber vacuum are separate connections.
     """
@@ -99,15 +101,22 @@ def build_schematic():
 
     pipe(ax, [(1.625, y), (2.5, y)], SUPPLY)
     pipe(ax, [(4.0, y), (4.92, y)], SUPPLY)
-    valve(ax, 5.1, y, label="V1", color=SUPPLY)
+    valve(ax, 5.1, y, label="V1a", color=SUPPLY)
+    # Dedicated cell evacuation bypasses the MFC and gas cylinder.
+    pipe(ax, [(5.8, y), (5.8, 3.35), (5.28, 3.35)])
+    valve(ax, 5.1, 3.35, label="V1b")
+    pipe(ax, [(4.92, 3.35), (4.35, 3.35)])
+    equipment(ax, 3.25, 3.35, 2.2, 0.9, "Gas cell pump")
+    flow_arrow(ax, (5.8, 4.35), (5.8, 3.85), INK)
+    flow_arrow(ax, (4.15, y), (4.75, y), INK)
     pipe(ax, [(5.28, y), (7.82, y)], SUPPLY)
+    junction(ax, 5.8, y, INK)
     valve(ax, 8.0, y, label="V2", color=SUPPLY)
     pipe(ax, [(8.18, y), (10.3, y)], SUPPLY)
     pipe(ax, [(6.55, y), (6.55, 5.55)], SUPPLY)
     instrument(ax, 6.55, 6.05, "Pressure\nsensor 1", color=SUPPLY)
     junction(ax, 6.55, y, SUPPLY)
-    flow_arrow(ax, (8.55, y), (8.88, y), SUPPLY)
-    label(ax, 6.45, 4.43, "Argon supply", size=9, color=SUPPLY)
+    label(ax, 7.0, 4.30, "Gas supply /\ncell evacuation", size=9, color=SUPPLY)
 
     vx = 11.15
     pipe(ax, [(vx, 3.85), (vx, 3.13)], VACUUM)
