@@ -1,0 +1,48 @@
+Run 118 independent PMT reference-TDC slewing calibration; held-out timing analysis
+Input: /Users/ihaein/Work/potassium/neutron/cosmic/data/cosmic_run118.root
+TDC ns/count: 0.025
+Selected/train/test: 3716/1858/1858
+ADC cuts Neutron 1-1/1-2/2-1/2-2/Trig 1/Trig 2 > 1130/1040/1000/1000/350/260 and < 3800
+Neutron 1-1: intercept=-2218.81, slope=84.02 counts; a=3254.08, b=2302.83; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Neutron 1-2: intercept=-2179.6, slope=64.892 counts; a=2513.26, b=2244.49; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Neutron 2-1: intercept=-2142.22, slope=71.8037 counts; a=2780.94, b=2214.02; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Neutron 2-2: intercept=-2226.34, slope=64.2779 counts; a=2489.47, b=2290.62; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Trig 1: intercept=-2804.03, slope=35.2064 counts; a=1363.54, b=2839.23; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Trig 2: intercept=-2808.08, slope=25.933 counts; a=1004.38, b=2834.01; f(Q)=a/sqrt(Q)-b; time=(TDC-TDC15)-f(Q)
+Before sigma +/- fit statistical error [ns]: 0.195654 +/- 0.004253
+After sigma +/- fit statistical error [ns]: 0.101816 +/- 0.00208916
+Before/after full RMS [ns]: 0.236581 / 0.105298
+Before/after fit chi2/ndf: 257.236/47 ; 45.2732/47
+Before/after fit status/cov: 0/3 ; 0/3
+Zero covariance assumed; no equal-detector resolution assumption. Negligible path-length spread assumed. No geometric or external reference subtraction. Errors omit calibration/model/geometry systematics. Gaussian core fits use median +/- 2.5 robust sigma. No time-window selection; tails contribute to RMS. Plots are each PMT TDC-TDC15 and its corrected value versus own ADC. Full fitted offsets are subtracted, so the corrected mean difference is not absolute flight time. Reference jitter and hit-position effects are not independently calibrated.
+After delta FWHM [ps]: 239.758 +/- 4.91959
+Neutron 2 - Neutron 1: sigma=101.816 +/- 2.08916 ps, variance=0.0103665 ns2; six-pair closure residual=-0.00860436 ns2
+Trig 1 - Neutron 1: sigma=364.012 +/- 7.02835 ps, variance=0.132505 ns2; six-pair closure residual=0.00485827 ns2
+Trig 2 - Neutron 1: sigma=285.786 +/- 5.49947 ps, variance=0.0816735 ns2; six-pair closure residual=0.00374609 ns2
+Trig 1 - Neutron 2: sigma=359.758 +/- 6.87059 ps, variance=0.129426 ns2; six-pair closure residual=0.00374609 ns2
+Trig 2 - Neutron 2: sigma=284.286 +/- 5.32134 ps, variance=0.0808187 ns2; six-pair closure residual=0.00485827 ns2
+Trig 2 - Trig 1: sigma=419.562 +/- 8.46715 ps, variance=0.176032 ns2; six-pair closure residual=-0.00860436 ns2
+Neutron 1: six-pair variance=0.0104689 ns2, sigma=102.318 ps (-1 means nonphysical)
+Neutron 2: six-pair variance=0.0085019 ns2, sigma=92.2058 ps (-1 means nonphysical)
+Trig 1: six-pair variance=0.117178 ns2, sigma=342.312 ps (-1 means nonphysical)
+Trig 2: six-pair variance=0.0674585 ns2, sigma=259.728 ps (-1 means nonphysical)
+Neutron 1 with Trig 1: triplet variance=0.00672282 ns2, sigma=81.9928 ps
+Neutron 2 with Trig 1: triplet variance=0.00364363 ns2, sigma=60.3625 ps
+Neutron 1 with Trig 2: triplet variance=0.00561064 ns2, sigma=74.9042 ps
+Neutron 2 with Trig 2: triplet variance=0.00475581 ns2, sigma=68.9624 ps
+Paired bootstrap accepted 200/200; fixed calibration; sigma errors by delta method from variance bootstrap.
+Neutron 1: six-pair variance error=0.00160955 ns2; sigma error=7.86544 ps
+Neutron 2: six-pair variance error=0.00186534 ns2; sigma error=10.1151 ps
+Trig 1: six-pair variance error=0.00589377 ns2; sigma error=8.60876 ps
+Trig 2: six-pair variance error=0.00367818 ns2; sigma error=7.08084 ps
+Neutron 1 with Trig 1: triplet variance error=0.00181077 ns2, sigma error=11.0422 ps
+Neutron 2 with Trig 1: triplet variance error=0.00178663 ns2, sigma error=14.7992 ps
+Neutron 1 with Trig 2: triplet variance error=0.00103387 ns2, sigma error=6.90128 ps
+Neutron 2 with Trig 2: triplet variance error=0.001072 ns2, sigma error=7.77235 ps
+Pair 0 closure residual error=0.00276126 ns2
+Pair 1 closure residual error=0.0016059 ns2
+Pair 2 closure residual error=0.00176324 ns2
+Pair 3 closure residual error=0.00176324 ns2
+Pair 4 closure residual error=0.0016059 ns2
+Pair 5 closure residual error=0.00276126 ns2
+The six-pair result is a consistency fit; reference-specific three-detector solutions should be inspected alongside its closure residuals. No equal-ND constraint. Negative variances are not clipped.

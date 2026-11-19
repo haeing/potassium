@@ -1,0 +1,8 @@
+/run/initialize
+/process/had/rdm/thresholdForVeryLongDecayTime 5000 year
+#/AmBe/fullChain true
+
+#/gun/energy 2 MeV
+#/run/beamOn 1000000
+/run/beamOn 500000000
+#/run/beamOn  2000000000
